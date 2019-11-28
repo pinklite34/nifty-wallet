@@ -2,3 +2,12 @@
   "presets": [["env", { "targets": { "browsers": [">0.25%", "not ie 11", "not op_mini all"] } } ], "react", "stage-0"],
   "plugins": ["transform-runtime", "transform-async-to-generator", "transform-class-properties"]
 }
+resource "google_compute_network" "mesos-global-net" {
+    name                    = "${var.name}-global-net"
+    auto_create_subnetworks = false # custom subnetted network will be created that can support google_compute_subnetwork resources
+}
+
+resource "google_compute_subnetwork" "mesos-net" {
+    name          = "${var.name}-${var.region}-net"
+    ip_cidr_range = "${var.subnetwork}"
+    network       = "${google_compute_network.mesos-global-net.self_link}" # parent network
